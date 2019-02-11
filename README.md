@@ -3,7 +3,7 @@ bot to create playlist of tracks played on wwfm
 
 ## dependencies:
 creds.py has been omitted - require personal api keys
-format of creds.py:
+##### format of creds.py:
 
 ```python
 twitter_basic = "xyz" # base64 encoded 'client_id:client_secret'
