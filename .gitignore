@@ -1,0 +1,5 @@
+__pycache__/
+.idea/
+creds.py
+creds.pyc
+geckodriver.log
