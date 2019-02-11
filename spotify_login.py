@@ -4,7 +4,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 import creds
 
 user_auth_url = 'https://accounts.spotify.com/authorize?' \
-                'client_id=e200939b8254438ca37783507dda3bab&' \
+                'client_id=' + creds.spotify_client_id + '&' \
                 'response_type=token&' \
                 'redirect_uri=https%3A%2F%2Fgithub.com%2Fpointsevenfive%2Fspotify-bot%2F' \
                 '&state=userauth' \
