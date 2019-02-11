@@ -2,12 +2,13 @@
 bot to create playlist of tracks played on wwfm 
 
 ## dependencies:
-creds.py has been omitted - require personal api keys
-format of creds.py:
+creds.py has been omitted - require personal api keys & user logins
+##### format of creds.py:
 
 ```python
 twitter_basic = "xyz" # base64 encoded 'client_id:client_secret'
 spotify_basic = "jkl" # base64 encoded 'client_id:client_secret'
+spotify_client_id = "plaintext_client_id"
 spotify_uname = "some_username_99"
 spotify_passw = "some_passord_123"
 ```
