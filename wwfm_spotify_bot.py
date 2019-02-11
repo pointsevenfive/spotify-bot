@@ -5,8 +5,8 @@ import json
 import spotify_login
 import datetime
 
-ww_fm_twitter_id = 'user_id=848867413848457217'
-spotfiy_bot_user_id = 's0x8eqjl9z8i5vjtcfvo6obzc'
+# Global variables
+ww_fm_twitter_id = '848867413848457217'
 max_tweets = '155'
 
 def get_oauth_twitter():
@@ -22,7 +22,7 @@ def get_oauth_twitter():
 
 def get_tweets(user_id):
     print('Getting tweets for ' + ww_fm_twitter_id)
-    url = 'https://api.twitter.com/1.1/statuses/user_timeline.json?' + user_id + '&count=' + max_tweets
+    url = 'https://api.twitter.com/1.1/statuses/user_timeline.json?user_id=' + user_id + '&count=' + max_tweets
     token = get_oauth_twitter()
     headers = {'Authorization': 'Bearer ' + str(token)}
     response = requests.get(url, headers=headers)
@@ -87,7 +87,7 @@ def get_track_id_from_response(reponse):
     return ''
 
 def create_playlist(auth):
-    url = 'https://api.spotify.com/v1/users/s0x8eqjl9z8i5vjtcfvo6obzc/playlists'
+    url = 'https://api.spotify.com/v1/users/' + creds.spotify_uname + '/playlists'
     today = datetime.datetime.today().strftime('%Y-%m-%d')
     playlist_name = 'WWFM bot ' + today
     description = 'Playlist created by ww_fm_spotify_bot on ' + today
@@ -124,9 +124,10 @@ def post_tracks(tracks, playlist_id, auth):
     else:
         print('Error during bot execution. please refer to logs for details')
 
-tweets = get_tweets(ww_fm_twitter_id)
-tracks_twitter = get_tracks_from_tweets(tweets)
-track_ids = query_spotify(tracks_twitter)
+# Main sequence
+track_ids = query_spotify(
+    get_tracks_from_tweets(
+        get_tweets(ww_fm_twitter_id)))
 auth = spotify_login.login_to_spotify()
 playlist_id = create_playlist(auth)
 tracks_body = generate_tracks_json(track_ids)
