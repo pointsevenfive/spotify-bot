@@ -1,13 +1,16 @@
 import creds
 import requests
-from requests.utils import requote_uri
 import json
 import spotify_login
 import datetime
 
 # Global variables
 ww_fm_twitter_id = '848867413848457217'
-max_tweets = '155'
+max_tweets = '200'
+
+def start_bot():
+    print('Beep boop starting spotify bot...')
+    print('max tweets set to: ' + max_tweets)
 
 def get_oauth_twitter():
     print('Getting oauth from twitter...')
@@ -56,12 +59,14 @@ def query_spotify(tracks):
     print('Searching for tracks...')
     for track in tracks:
         url = append_spotify_query_string(spotify_search, track, type)
-        print(url)
         response = requests.get(url, headers=headers)
         track_id = get_track_id_from_response(json.loads(response.content))
         if track_id != '':
             print('Found ' + str(track) + ' on Spotify!')
             track_ids[track] = track_id
+        if len(track_ids) == 100:
+            print('Found ' + str(len(track_ids)) + ' out of a possible ' + str(len(tracks)))
+            return track_ids
     print('Found ' + str(len(track_ids)) + ' out of a possible ' + str(len(tracks)))
     return track_ids
 
@@ -125,6 +130,7 @@ def post_tracks(tracks, playlist_id, auth):
         print('Error during bot execution. please refer to logs for details')
 
 # Main sequence
+start_bot()
 track_ids = query_spotify(
     get_tracks_from_tweets(
         get_tweets(ww_fm_twitter_id)))
