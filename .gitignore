@@ -3,3 +3,4 @@ __pycache__/
 creds.py
 creds.pyc
 geckodriver.log
+run_bot.bat
