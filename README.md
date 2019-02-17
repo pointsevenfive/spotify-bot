@@ -3,7 +3,9 @@ bot to create playlist of tracks played on wwfm
 
 ## dependencies:
 geckodriver.exe
+
 creds.py has been omitted - require personal api keys & user logins
+
 ##### format of creds.py:
 
 ```python
