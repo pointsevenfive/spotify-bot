@@ -5,16 +5,19 @@ import spotify_login
 import datetime
 
 # Global variables
-ww_fm_twitter_id = '848867413848457217'
+api_twitter = 'https://api.twitter.com'
+api_spotify = 'https://api.spotify.com'
 max_tweets = '200'
 
 def start_bot():
     print('Beep boop starting spotify bot...')
     print('max tweets set to: ' + max_tweets)
+    print('twitter user id: ' + creds.ww_fm_twitter_id)
+
 
 def get_oauth_twitter():
     print('Getting oauth from twitter...')
-    url = 'https://api.twitter.com/oauth2/token'
+    url = api_twitter + '/oauth2/token'
     data = 'grant_type=client_credentials'
     auth = creds.twitter_basic
     headers = {'Authorization': 'Basic ' + str(auth), 'Content-Type': 'application/x-www-form-urlencoded'}
@@ -24,8 +27,8 @@ def get_oauth_twitter():
     return oauth.get('access_token')
 
 def get_tweets(user_id):
-    print('Getting tweets for ' + ww_fm_twitter_id)
-    url = 'https://api.twitter.com/1.1/statuses/user_timeline.json?user_id=' + user_id + '&count=' + max_tweets
+    print('Getting tweets for ' + creds.ww_fm_twitter_id)
+    url = api_twitter + '/1.1/statuses/user_timeline.json?user_id=' + user_id + '&count=' + max_tweets
     token = get_oauth_twitter()
     headers = {'Authorization': 'Bearer ' + str(token)}
     response = requests.get(url, headers=headers)
@@ -51,7 +54,7 @@ def get_oauth_spotify():
     return oauth.get('access_token')
 
 def query_spotify(tracks):
-    spotify_search = 'https://api.spotify.com/v1/search'
+    spotify_search = api_spotify + '/v1/search'
     type = 'track'
     token = get_oauth_spotify()
     headers = {'Authorization': 'Bearer ' + token}
@@ -79,7 +82,7 @@ def clean_uri(uri):
     uri = uri.replace('#', '')
     uri = uri.replace('(', '')
     uri = uri.replace(')', '')
-    uri = uri.replace('&amp', '')
+    uri = uri.replace('&amp;', '')
     return uri
 
 
@@ -91,8 +94,13 @@ def get_track_id_from_response(reponse):
         return track_id
     return ''
 
+def get_playlist_name():
+    today = datetime.datetime.today().strftime('%Y-%m-%d')
+    playlist_name = 'WWFM bot ' + today
+    return playlist_name
+
 def create_playlist(auth):
-    url = 'https://api.spotify.com/v1/users/' + creds.spotify_uname + '/playlists'
+    url = api_spotify + '/v1/users/' + creds.spotify_uname + '/playlists'
     today = datetime.datetime.today().strftime('%Y-%m-%d')
     playlist_name = 'WWFM bot ' + today
     description = 'Playlist created by ww_fm_spotify_bot on ' + today
@@ -121,19 +129,28 @@ def generate_tracks_json(track_ids):
 
 def post_tracks(tracks, playlist_id, auth):
     print('Adding tracks to playlist: ' + playlist_id)
-    url = 'https://api.spotify.com/v1/playlists/%playlist_id%/tracks'.replace('%playlist_id%', playlist_id)
+    url = api_spotify + '/v1/playlists/%playlist_id%/tracks'.replace('%playlist_id%', playlist_id)
     headers = {'Authorization': 'Bearer ' + auth, 'Content-Type': 'application/json'}
     response = requests.post(url, data=tracks, headers=headers)
-    if response.status_code == 201:
-        print('Tracks added. Happy listening! Bot out.')
-    else:
-        print('Error during bot execution. please refer to logs for details')
+    print('Received ' + str(response.status_code) + ' response from /playlists')
+    return url
+
+def post_twitter_link(link):
+    url = api_twitter + '/statuses/update.json'
+    token = get_oauth_twitter()
+    headers = {'Authorization': 'Bearer ' + str(token)}
+    playlist_name = get_playlist_name()
+    data = {'status': playlist_name, 'attachment_url': link}
+    response = requests.post(url, headers=headers, data=data)
+    print('Received ' + str(response.status_code) + ' response from /statuses/update')
+
+
 
 # Main sequence
 start_bot()
 track_ids = query_spotify(
     get_tracks_from_tweets(
-        get_tweets(ww_fm_twitter_id)))
+        get_tweets(creds.ww_fm_twitter_id)))
 auth = spotify_login.login_to_spotify()
 playlist_id = create_playlist(auth)
 tracks_body = generate_tracks_json(track_ids)
