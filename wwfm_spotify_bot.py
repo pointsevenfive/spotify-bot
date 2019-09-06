@@ -176,7 +176,6 @@ def health_check():
         code = status_codes[url]
         if not code.startswith('2'):
             is_failure = True
-            
     if is_failure:
         input(FAIL + 'Error occurred when running bot...' + WARNING + ' maintenance required please check output' + ENDC)
 
