@@ -5,11 +5,11 @@ import creds
 
 user_auth_url = 'https://accounts.spotify.com/authorize?' \
                 'client_id=' + creds.spotify_client_id + '&' \
-                'response_type=token&' \
-                'redirect_uri=https%3A%2F%2Fgithub.com%2Fpointsevenfive%2Fspotify-bot%2F' \
-                '&state=userauth' \
-                '&scope=playlist-modify-public' \
-                '&show_dialog=false'
+                'response_type=token' + '&'  \
+                'redirect_uri=' + creds.callback_url + '&' \
+                'state=userauth' + '&'  \
+                'scope=playlist-modify-public' + '&'  \
+                'show_dialog=false'
 
 def login_to_spotify():
     options = Options()

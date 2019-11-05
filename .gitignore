@@ -1,7 +1,7 @@
 __pycache__/
 .idea/
 creds.py
-creds.pyc
+*.pyc
 geckodriver.exe
 geckodriver.log
 run_bot.bat
