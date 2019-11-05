@@ -17,3 +17,4 @@ callback_url = "https%3A%2F%2Fsome-escaped-url-here.com
 ```
 ### designed to run on Windows
 other machines in the pipeline for development - dependency on js loading for spotify user login (current solution is using Selenium webdriver)
+
